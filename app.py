@@ -5,25 +5,20 @@ import requests
 from groq import Groq
 import tempfile
 import uuid
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 # Configure your API keys here - REPLACE WITH YOUR ACTUAL KEYS
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")  # Get from: https://console.groq.com/
-ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")  # Get from: https://elevenlabs.io/
-ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "xctasy8XvGp2cVO9HL9k")
-
-# Uncomment and use environment variables for production (recommended):
-# GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-# ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
+ELEVENLABS_VOICE_ID = "xctasy8XvGp2cVO9HL9k"
 
 # Initialize Groq client
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY is not set")
-
 groq_client = Groq(api_key=GROQ_API_KEY)
-
 
 # Store conversation history (in production, use a database)
 conversations = {}
