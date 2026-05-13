@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account · Mindful AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+</head>
+<body>
+    <div class="auth-shell">
+        <div class="auth-card">
+            <div class="auth-logo">🧠</div>
+            <h1 class="auth-title">Join <span class="highlight">Mindful AI</span></h1>
+            <p class="auth-subtitle">Create an account to start your journey</p>
+
+            <div class="alert" id="alert"></div>
+
+            <form id="signup-form">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input class="form-input" type="text" id="username" name="username" autocomplete="username" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input class="form-input" type="email" id="email" name="email" autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-input" type="password" id="password" name="password" autocomplete="new-password" required minlength="6">
+                </div>
+                <button type="submit" class="btn-primary" id="submit-btn">Create account</button>
+            </form>
+
+            <p class="auth-footer">
+                Already have an account? <a href="{{ url_for('login') }}">Sign in</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('signup-form');
+        const alertBox = document.getElementById('alert');
+        const submitBtn = document.getElementById('submit-btn');
+
+        function showError(msg) {
+            alertBox.className = 'alert error';
+            alertBox.textContent = msg;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            alertBox.className = 'alert';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating account…';
+
+            try {
+                const res = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value.trim(),
+                        email: document.getElementById('email').value.trim(),
+                        password: document.getElementById('password').value
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    showError(data.error || 'Signup failed');
+                } else {
+                    window.location.href = '/chat';
+                    return;
+                }
+            } catch (err) {
+                showError('Network error. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create account';
+            }
+        });
+    </script>
+</body>
+</html>

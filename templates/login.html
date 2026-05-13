@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In · Mindful AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+</head>
+<body>
+    <div class="auth-shell">
+        <div class="auth-card">
+            <div class="auth-logo">🧠</div>
+            <h1 class="auth-title">Welcome back to <span class="highlight">Mindful AI</span></h1>
+            <p class="auth-subtitle">Sign in to continue your wellness journey</p>
+
+            <div class="alert" id="alert"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="identifier">Email or Username</label>
+                    <input class="form-input" type="text" id="identifier" name="identifier" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-input" type="password" id="password" name="password" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="btn-primary" id="submit-btn">Sign in</button>
+            </form>
+
+            <p class="auth-footer">
+                New here? <a href="{{ url_for('signup') }}">Create an account</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('login-form');
+        const alertBox = document.getElementById('alert');
+        const submitBtn = document.getElementById('submit-btn');
+
+        function showError(msg) {
+            alertBox.className = 'alert error';
+            alertBox.textContent = msg;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            alertBox.className = 'alert';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing in…';
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        identifier: document.getElementById('identifier').value.trim(),
+                        password: document.getElementById('password').value
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    showError(data.error || 'Login failed');
+                } else {
+                    window.location.href = '/chat';
+                    return;
+                }
+            } catch (err) {
+                showError('Network error. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign in';
+            }
+        });
+    </script>
+</body>
+</html>

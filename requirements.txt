@@ -3,3 +3,5 @@ flask-cors
 requests
 groq
 python-dotenv
+werkzeug
+gunicorn
