@@ -5,3 +5,4 @@ groq
 python-dotenv
 werkzeug
 gunicorn
+psycopg2-binary

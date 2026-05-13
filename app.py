@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()  # MUST run before importing database (which reads DATABASE_URL at module load)
+
 from flask import Flask, request, jsonify, send_file, render_template, redirect, url_for, session
 from flask_cors import CORS
 import os
@@ -8,11 +11,8 @@ import tempfile
 from functools import wraps
 from groq import Groq
 from werkzeug.security import generate_password_hash, check_password_hash
-from dotenv import load_dotenv
 
 import database as db
-
-load_dotenv()
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'change-me-in-production-please')
